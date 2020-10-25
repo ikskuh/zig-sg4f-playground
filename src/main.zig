@@ -593,14 +593,14 @@ const SPI = struct {
         return lpc.LPC_SSP0.DR;
     }
 
-fn write(value: u16) void {
-    switch (mode) {
-        .@"async" => EventLoop.waitForRegister(u32, &lpc.LPC_SSP0.SR, TNF, TNF),
-        .@"sync" => while ((lpc.LPC_SSP0.SR & TNF) == 0) {}, // while transmit fifo is full
-        .fast => {},
+    fn write(value: u16) void {
+        switch (mode) {
+            .@"async" => EventLoop.waitForRegister(u32, &lpc.LPC_SSP0.SR, TNF, TNF),
+            .@"sync" => while ((lpc.LPC_SSP0.SR & TNF) == 0) {}, // while transmit fifo is full
+            .fast => {},
+        }
+        lpc.LPC_SSP0.DR = value & 0x1FF;
     }
-    lpc.LPC_SSP0.DR = value & 0x1FF;
-}
 
     fn setPrescaler(prescaler: u32) void {
         lpc.LPC_SSP0.CPSR = prescaler;
